@@ -8,6 +8,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const activityInput = document.getElementById("activity");
   const closeRegistrationModal = document.querySelector(".close-modal");
 
+  // Dark mode toggle
+  const darkModeToggle = document.getElementById("dark-mode-toggle");
+
   // Search and filter elements
   const searchInput = document.getElementById("activity-search");
   const searchButton = document.getElementById("search-button");
@@ -43,6 +46,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Authentication state
   let currentUser = null;
+
+  // Dark mode state
+  let isDarkMode = false;
 
   // Time range mappings for the dropdown
   const timeRanges = {
@@ -116,6 +122,40 @@ document.addEventListener("DOMContentLoaded", () => {
     // Set authentication class on body
     updateAuthBodyClass();
   }
+
+  // Dark mode functions
+  function initDarkMode() {
+    // Check localStorage for saved preference
+    const savedMode = localStorage.getItem("darkMode");
+    if (savedMode === "true") {
+      isDarkMode = true;
+      document.body.classList.add("dark-mode");
+      updateDarkModeIcon();
+    }
+  }
+
+  function toggleDarkMode() {
+    isDarkMode = !isDarkMode;
+    if (isDarkMode) {
+      document.body.classList.add("dark-mode");
+    } else {
+      document.body.classList.remove("dark-mode");
+    }
+    // Save preference to localStorage
+    localStorage.setItem("darkMode", isDarkMode);
+    updateDarkModeIcon();
+  }
+
+  function updateDarkModeIcon() {
+    darkModeToggle.textContent = isDarkMode ? "☀️" : "🌙";
+    darkModeToggle.setAttribute(
+      "title",
+      isDarkMode ? "Switch to light mode" : "Switch to dark mode"
+    );
+  }
+
+  // Event listener for dark mode toggle
+  darkModeToggle.addEventListener("click", toggleDarkMode);
 
   // Validate user session with the server
   async function validateUserSession(username) {
@@ -862,6 +902,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   // Initialize app
+  initDarkMode();
   checkAuthentication();
   initializeFilters();
   fetchActivities();
